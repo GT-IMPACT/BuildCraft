@@ -20,11 +20,10 @@ buildscript {
 
 apply plugin: 'forge' // adds the forge dependency
 apply plugin: 'maven' // for uploading to a maven repo
-apply plugin: 'checkstyle'
 
-version = "7.1.23"
+version = "7.1.5"
 group= "com.mod-buildcraft"
-archivesBaseName = "buildcraft" // the name that all artifacts will use as a base. artifacts names follow this pattern: [baseName]-[appendix]-[version]-[classifier].[extension]
+archivesBaseName = "buildcraft-impact" // the name that all artifacts will use as a base. artifacts names follow this pattern: [baseName]-[appendix]-[version]-[classifier].[extension]
 
 ext.mcModInfo = new groovy.json.JsonSlurper().parse(file("buildcraft_resources/mcmod.info"))
 ext.priv = parseConfig(file('private.properties'))
@@ -127,11 +126,6 @@ javadoc {
     source += sourceSets.api.allSource
 }
 
-// add a javadoc jar
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from 'build/docs/javadoc'
-}
 
 // because the normal output has been made to be obfuscated
 task deobfJar(type: Jar) {
@@ -145,111 +139,15 @@ task apiJar(type: Jar) {
     classifier = 'api'
 }
 
-task coreJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'core'
-
-    doFirst {
-        from(createMCModInfo(0, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcraft/**", "assets/buildcraftcore/**", "buildcraft/BuildCraftCore**", "buildcraft/BuildCraftMod**", "buildcraft/core/**", "buildcraft/api/**", "cofh/**", "changelog/**", "LICENSE**", "versions.txt"])
-        }
-    }
-}
-
-task buildersJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'builders'
-
-    doFirst {
-        from(createMCModInfo(1, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcraftbuilders/**", "buildcraft/builders/**", "buildcraft/BuildCraftBuilders**", "LICENSE"])
-        }
-    }
-}
-
-task energyJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'energy'
-
-    doFirst {
-        from(createMCModInfo(2, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcraftenergy/**", "buildcraft/energy/**", "buildcraft/BuildCraftEnergy**", "LICENSE"])
-        }
-    }
-}
-
-task factoryJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'factory'
-
-    doFirst {
-        from(createMCModInfo(3, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcraftfactory/**", "buildcraft/factory/**", "buildcraft/BuildCraftFactory**", "LICENSE"])
-        }
-    }
-}
-
-task siliconJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'silicon'
-
-    doFirst {
-        from(createMCModInfo(4, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcraftsilicon/**", "buildcraft/silicon/**", "buildcraft/BuildCraftSilicon**", "LICENSE"])
-        }
-    }
-}
-
-task transportJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'transport'
-
-    doFirst {
-        from(createMCModInfo(5, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcrafttransport/**", "buildcraft/transport/**", "buildcraft/BuildCraftTransport**", "LICENSE"])
-        }
-    }
-}
-
-task roboticsJar(type: Jar, dependsOn: reobf) {
-
-    destinationDir = file("modules")
-    classifier = 'robotics'
-
-    doFirst {
-        from(createMCModInfo(6, name).parentFile)
-        from(project.ext.jarFile) {
-            includes.addAll(["assets/buildcraftrobotics/**", "buildcraft/robotics/**", "buildcraft/BuildCraftRobotics**", "LICENSE"])
-        }
-    }
-}
-
 
 // add api classes to main package
 jar {
 	from sourceSets.api.output
 }
 
-checkstyle {
-	configFile = file('guidelines/buildcraft.checkstyle')
-}
-
-checkstyleApi.exclude 'cofh/**'
 
 // make sure all of these happen when we run build
-build.dependsOn sourceJar, javadocJar, deobfJar, apiJar
+build.dependsOn sourceJar, deobfJar, apiJar
 
 // --------------------
 // maven section
@@ -275,18 +173,9 @@ clean{
 artifacts {
     // the default jar is already here by default
     archives sourceJar
-    archives javadocJar
     archives deobfJar
     archives apiJar
 
-    // Modules
-    archives coreJar
-    archives buildersJar
-    archives energyJar
-    archives factoryJar
-    archives siliconJar
-    archives transportJar
-    archives roboticsJar
 }
 
 def sftp(String subPath, Closure antFileset = {}) {
