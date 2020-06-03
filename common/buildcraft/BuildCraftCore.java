@@ -209,7 +209,6 @@ public class BuildCraftCore extends BuildCraftMod {
 	public static Item wrenchItem;
 	public static Item mapLocationItem;
 	public static Item debuggerItem;
-	public static Item paintbrushItem;
 	public static ItemList listItem;
 	public static ItemTablet tabletItem;
 	@SideOnly(Side.CLIENT)
@@ -330,9 +329,6 @@ public class BuildCraftCore extends BuildCraftMod {
 			springBlock = new BlockSpring().setBlockName("eternalSpring");
 			BCRegistry.INSTANCE.registerBlock(springBlock, ItemSpring.class, false);
 		}
-
-		paintbrushItem = (new ItemPaintbrush()).setUnlocalizedName("paintbrush");
-		BCRegistry.INSTANCE.registerItem(paintbrushItem, false);
 
 		if (DEVELOPER_MODE) {
 			tabletItem = new ItemTablet();
