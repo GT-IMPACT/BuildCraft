@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 import static buildcraft.BuildCraftBuilders.fillerBlock;
+import static buildcraft.BuildCraftCore.markerBlock;
 
 public class ItemBlockBuildCraft extends ItemBlock {
 
@@ -35,7 +36,7 @@ public class ItemBlockBuildCraft extends ItemBlock {
 	@Override
 	public void addInformation(ItemStack par1, EntityPlayer player, List aList, boolean b) {
 		super.addInformation(par1, player, aList, b);
-		if (mBlock==fillerBlock) {
+		if (mBlock==fillerBlock || mBlock == markerBlock) {
 			aList.add("Max range 128 Blocks");
 		}
 	}
