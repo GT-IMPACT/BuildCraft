@@ -202,16 +202,10 @@ public class BuildCraftCore extends BuildCraftMod {
 	public static BuildCraftConfiguration mainConfiguration;
 	public static ConfigManager mainConfigManager;
 
-	public static BlockEngine engineBlock;
 	public static BlockMarker markerBlock;
 	public static BlockPathMarker pathMarkerBlock;
 	public static Block springBlock;
 	public static BlockBuildTool buildToolBlock;
-	public static Item woodenGearItem;
-	public static Item stoneGearItem;
-	public static Item ironGearItem;
-	public static Item goldGearItem;
-	public static Item diamondGearItem;
 	public static Item wrenchItem;
 	public static Item mapLocationItem;
 	public static Item debuggerItem;
@@ -261,11 +255,6 @@ public class BuildCraftCore extends BuildCraftMod {
 
 	public static AchievementManager achievementManager;
 
-	public static Achievement woodenGearAchievement;
-	public static Achievement stoneGearAchievement;
-	public static Achievement ironGearAchievement;
-	public static Achievement goldGearAchievement;
-	public static Achievement diamondGearAchievement;
 	public static Achievement wrenchAchievement;
 	public static Achievement engineRedstoneAchievement;
 
@@ -342,31 +331,6 @@ public class BuildCraftCore extends BuildCraftMod {
 			BCRegistry.INSTANCE.registerBlock(springBlock, ItemSpring.class, false);
 		}
 
-		woodenGearItem = (new ItemGear()).setUnlocalizedName("woodenGearItem");
-		if (BCRegistry.INSTANCE.registerItem(woodenGearItem, false)) {
-			OreDictionary.registerOre("gearWood", new ItemStack(woodenGearItem));
-		}
-
-		stoneGearItem = (new ItemGear()).setUnlocalizedName("stoneGearItem");
-		if (BCRegistry.INSTANCE.registerItem(stoneGearItem, false)) {
-			OreDictionary.registerOre("gearStone", new ItemStack(stoneGearItem));
-		}
-
-		ironGearItem = (new ItemGear()).setUnlocalizedName("ironGearItem");
-		if (BCRegistry.INSTANCE.registerItem(ironGearItem, false)) {
-			OreDictionary.registerOre("gearIron", new ItemStack(ironGearItem));
-		}
-
-		goldGearItem = (new ItemGear()).setUnlocalizedName("goldGearItem");
-		if (BCRegistry.INSTANCE.registerItem(goldGearItem, false)) {
-			OreDictionary.registerOre("gearGold", new ItemStack(goldGearItem));
-		}
-
-		diamondGearItem = (new ItemGear()).setUnlocalizedName("diamondGearItem");
-		if (BCRegistry.INSTANCE.registerItem(diamondGearItem, false)) {
-			OreDictionary.registerOre("gearDiamond", new ItemStack(diamondGearItem));
-		}
-
 		paintbrushItem = (new ItemPaintbrush()).setUnlocalizedName("paintbrush");
 		BCRegistry.INSTANCE.registerItem(paintbrushItem, false);
 
@@ -379,11 +343,6 @@ public class BuildCraftCore extends BuildCraftMod {
 		buildToolBlock = new BlockBuildTool();
 		buildToolBlock.setBlockName("buildToolBlock");
 		BCRegistry.INSTANCE.registerBlock(buildToolBlock, true);
-
-		engineBlock = (BlockEngine) CompatHooks.INSTANCE.getBlock(BlockEngine.class);
-		BCRegistry.INSTANCE.registerBlock(engineBlock, ItemEngine.class, true);
-		engineBlock.registerTile((Class<? extends TileEngineBase>) CompatHooks.INSTANCE.getTile(TileEngineWood.class), 0, "tile.engineWood", "buildcraftcore:engineWood");
-		BCRegistry.INSTANCE.registerTileEntity(TileEngineWood.class, "net.minecraft.src.buildcraft.energy.TileEngineWood");
 
 		markerBlock = (BlockMarker) CompatHooks.INSTANCE.getBlock(BlockMarker.class);
 		BCRegistry.INSTANCE.registerBlock(markerBlock.setBlockName("markerBlock"), false);
@@ -413,14 +372,6 @@ public class BuildCraftCore extends BuildCraftMod {
 		achievementManager = new AchievementManager("BuildCraft");
 		FMLCommonHandler.instance().bus().register(achievementManager);
 
-		woodenGearAchievement = achievementManager.registerAchievement(new Achievement("achievement.woodenGear", "woodenGearAchievement", 0, 0, woodenGearItem, null));
-		stoneGearAchievement = achievementManager.registerAchievement(new Achievement("achievement.stoneGear", "stoneGearAchievement", 2, 0, stoneGearItem, woodenGearAchievement));
-		ironGearAchievement = achievementManager.registerAchievement(new Achievement("achievement.ironGear", "ironGearAchievement", 4, 0, ironGearItem, stoneGearAchievement));
-		goldGearAchievement = achievementManager.registerAchievement(new Achievement("achievement.goldGear", "goldGearAchievement", 6, 0, goldGearItem, ironGearAchievement));
-		diamondGearAchievement = achievementManager.registerAchievement(new Achievement("achievement.diamondGear", "diamondGearAchievement", 8, 0, diamondGearItem, goldGearAchievement));
-		wrenchAchievement = achievementManager.registerAchievement(new Achievement("achievement.wrench", "wrenchAchievement", 3, 2, wrenchItem, stoneGearAchievement));
-		engineRedstoneAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.redstoneEngine", "engineAchievement1", 1, -2, new ItemStack(engineBlock, 1, 0), BuildCraftCore.woodenGearAchievement));
-
 		// BuildCraft 6.1.4 and below - migration only
 		StatementManager.registerParameterClass("buildcraft:stackTrigger", StatementParameterItemStack.class);
 		StatementManager.registerParameterClass("buildcraft:stackAction", StatementParameterItemStack.class);
@@ -440,16 +391,10 @@ public class BuildCraftCore extends BuildCraftMod {
 			mainConfiguration.save();
 		}
 
-		if (BuildCraftCore.loadDefaultRecipes) {
-			loadRecipes();
-		}
-
 		BCCreativeTab.get("main").setIcon(new ItemStack(BuildCraftCore.wrenchItem, 1));
 
 		EntityList.stringToClassMapping.remove("BuildCraft|Core.bcLaser");
 		EntityList.stringToClassMapping.remove("BuildCraft|Core.bcEnergyLaser");
-
-		BuilderAPI.schematicRegistry.registerSchematicBlock(engineBlock, SchematicEngine.class);
 
 		CoreProxy.proxy.initializeRendering();
 		CoreProxy.proxy.initializeEntityRendering();
@@ -664,57 +609,6 @@ public class BuildCraftCore extends BuildCraftMod {
 	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
 		if ("BuildCraft|Core".equals(event.modID)) {
 			reloadConfig(event.isWorldRunning ? ConfigManager.RestartRequirement.NONE : ConfigManager.RestartRequirement.WORLD);
-		}
-	}
-
-	public void loadRecipes() {
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(wrenchItem), "I I", " G ", " I ", 'I', "ingotIron", 'G', "gearStone");
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(woodenGearItem), " S ", "S S",
-				" S ", 'S',
-				"stickWood");
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(stoneGearItem), " I ", "IGI",
-				" I ", 'I',
-				"cobblestone", 'G',
-				"gearWood");
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(ironGearItem), " I ", "IGI",
-				" I ", 'I',
-				"ingotIron", 'G', "gearStone");
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(goldGearItem), " I ", "IGI",
-				" I ", 'I',
-				"ingotGold", 'G', "gearIron");
-		BCRegistry.INSTANCE.addCraftingRecipe(
-				new ItemStack(diamondGearItem), " I ", "IGI", " I ", 'I', "gemDiamond", 'G', "gearGold");
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(mapLocationItem), "ppp", "pYp", "ppp", 'p', Items.paper, 'Y', "dyeYellow");
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(engineBlock, 1, 0),
-				"www", " g ", "GpG", 'w', "plankWood", 'g', "blockGlass", 'G',
-				"gearWood", 'p', Blocks.piston);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(markerBlock, 1), "l ", "r ", 'l',
-				new ItemStack(Items.dye, 1, 4), 'r', Blocks.redstone_torch);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(pathMarkerBlock, 1), "l ", "r ", 'l',
-				"dyeGreen", 'r', Blocks.redstone_torch);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(paintbrushItem), " iw", " gi", "s  ",
-				's', "stickWood", 'g', "gearWood", 'w', new ItemStack(Blocks.wool, 1, 0), 'i', Items.string);
-
-		ItemStack anyPaintbrush = new ItemStack(paintbrushItem, 1, OreDictionary.WILDCARD_VALUE);
-
-		for (int i = 0; i < 16; i++) {
-			ItemStack outputStack = new ItemStack(paintbrushItem);
-			NBTUtils.getItemData(outputStack).setByte("color", (byte) i);
-			BCRegistry.INSTANCE.addShapelessRecipe(outputStack, anyPaintbrush, EnumColor.fromId(i).getDye());
-		}
-
-		// Convert old lists to new lists
-		BCRegistry.INSTANCE.addShapelessRecipe(new ItemStack(listItem, 1, 1), new ItemStack(listItem, 1, 0));
-
-		if (Loader.isModLoaded("BuildCraft|Silicon")) {
-			CoreSiliconRecipes.loadSiliconRecipes();
-		} else {
-			BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(listItem, 1, 1), "ppp", "pYp", "ppp", 'p', Items.paper, 'Y',
-					"dyeGreen");
 		}
 	}
 

@@ -253,7 +253,7 @@ public class TileFiller extends TileAbstractBuilder implements IHasWork, IContro
 		}
 
 		return entityplayer.getDistanceSq(xCoord + 0.5D, yCoord + 0.5D,
-				zCoord + 0.5D) <= 64D;
+				zCoord + 0.5D) <= 128D;
 	}
 
 	@Override

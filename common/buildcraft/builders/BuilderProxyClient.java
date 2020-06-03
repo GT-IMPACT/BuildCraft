@@ -49,7 +49,6 @@ public class BuilderProxyClient extends BuilderProxy {
 		}));
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileQuarry.class, new RenderMultiTESR(new TileEntitySpecialRenderer[]{
-				new RenderLEDTile(BuildCraftBuilders.quarryBlock),
 				new RenderBuilder()
 		}));
 

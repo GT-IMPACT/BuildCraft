@@ -97,8 +97,6 @@ public class BuildCraftEnergy extends BuildCraftMod {
 	public static Block blockOil;
 	public static Block blockFuel;
 	public static Block blockRedPlasma;
-	public static Item bucketOil;
-	public static Item bucketFuel;
 	public static Item bucketRedPlasma;
 	public static Item fuel;
 
@@ -254,22 +252,6 @@ public class BuildCraftEnergy extends BuildCraftMod {
 			blockRedPlasma = fluidRedPlasma.getBlock();
 		}
 
-		// Buckets
-
-		if (blockOil != null) {
-			bucketOil = new ItemBucketBuildcraft(blockOil);
-			bucketOil.setUnlocalizedName("bucketOil").setContainerItem(Items.bucket);
-			BCRegistry.INSTANCE.registerItem(bucketOil, true);
-			FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("oil", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(bucketOil), new ItemStack(Items.bucket));
-		}
-
-		if (blockFuel != null) {
-			bucketFuel = new ItemBucketBuildcraft(blockFuel);
-			bucketFuel.setUnlocalizedName("bucketFuel").setContainerItem(Items.bucket);
-			BCRegistry.INSTANCE.registerItem(bucketFuel, true);
-			FluidContainerRegistry.registerFluidContainer(FluidRegistry.getFluidStack("fuel", FluidContainerRegistry.BUCKET_VOLUME), new ItemStack(bucketFuel), new ItemStack(Items.bucket));
-		}
-
 		if (BuildCraftCore.DEVELOPER_MODE) {
 			if (blockRedPlasma != null) {
 				bucketRedPlasma = new ItemBucketBuildcraft(blockRedPlasma);
@@ -280,12 +262,6 @@ public class BuildCraftEnergy extends BuildCraftMod {
 		}
 
 		// BucketHandler ensures empty buckets fill with the correct liquid.
-		if (blockOil != null) {
-			BucketHandler.INSTANCE.buckets.put(blockOil, bucketOil);
-		}
-		if (blockFuel != null) {
-			BucketHandler.INSTANCE.buckets.put(blockFuel, bucketFuel);
-		}
 		MinecraftForge.EVENT_BUS.register(BucketHandler.INSTANCE);
 
 		BuildcraftRecipeRegistry.refinery.addRecipe("buildcraft:fuel", new FluidStack(fluidOil, 1), new FluidStack(
@@ -297,10 +273,6 @@ public class BuildCraftEnergy extends BuildCraftMod {
 		BuildcraftFuelRegistry.coolant.addCoolant(FluidRegistry.WATER, 0.0023f);
 		BuildcraftFuelRegistry.coolant.addSolidCoolant(StackKey.stack(Blocks.ice), StackKey.fluid(FluidRegistry.WATER), 1.5f);
 		BuildcraftFuelRegistry.coolant.addSolidCoolant(StackKey.stack(Blocks.packed_ice), StackKey.fluid(FluidRegistry.WATER), 2.0f);
-
-		BuildCraftCore.engineBlock.registerTile(TileEngineStone.class, 1, "tile.engineStone", "buildcraftenergy:engineStone");
-		BuildCraftCore.engineBlock.registerTile(TileEngineIron.class, 2, "tile.engineIron", "buildcraftenergy:engineIron");
-		BuildCraftCore.engineBlock.registerTile(TileEngineCreative.class, 3, "tile.engineCreative", "buildcraftenergy:engineCreative");
 
 		InterModComms.registerHandler(new IMCHandlerEnergy());
 
@@ -386,15 +358,8 @@ public class BuildCraftEnergy extends BuildCraftMod {
 
 		StatementManager.registerTriggerProvider(new EnergyStatementProvider());
 
-		if (BuildCraftCore.loadDefaultRecipes) {
-			loadRecipes();
-		}
-
 		EnergyProxy.proxy.registerBlockRenderers();
 		EnergyProxy.proxy.registerTileEntities();
-
-		engineAchievement2 = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.stirlingEngine", "engineAchievement2", 3, -2, new ItemStack(BuildCraftCore.engineBlock, 1, 1), BuildCraftCore.engineRedstoneAchievement));
-		engineAchievement3 = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.combustionEngine", "engineAchievement3", 5, -2, new ItemStack(BuildCraftCore.engineBlock, 1, 2), engineAchievement2));
 	}
 
 	@Mod.EventHandler
@@ -421,14 +386,6 @@ public class BuildCraftEnergy extends BuildCraftMod {
 		}
 	}
 
-	public static void loadRecipes() {
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(BuildCraftCore.engineBlock, 1, 1),
-				"www", " g ", "GpG", 'w', "cobblestone",
-				'g', "blockGlass", 'G', "gearStone", 'p', Blocks.piston);
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(BuildCraftCore.engineBlock, 1, 2),
-				"www", " g ", "GpG", 'w', "ingotIron",
-				'g', "blockGlass", 'G', "gearIron", 'p', Blocks.piston);
-	}
 
 	private int findUnusedBiomeID(String biomeName) {
 		int freeBiomeID;
@@ -465,13 +422,6 @@ public class BuildCraftEnergy extends BuildCraftMod {
 	@Mod.EventHandler
 	public void remap(FMLMissingMappingsEvent event) {
 		for (FMLMissingMappingsEvent.MissingMapping mapping : event.get()) {
-			if (mapping.name.equals("BuildCraft|Energy:engineBlock")) {
-				if (mapping.type == GameRegistry.Type.BLOCK) {
-					mapping.remap(BuildCraftCore.engineBlock);
-				} else if (mapping.type == GameRegistry.Type.ITEM) {
-					mapping.remap(Item.getItemFromBlock(BuildCraftCore.engineBlock));
-				}
-			}
 		}
 	}
 }

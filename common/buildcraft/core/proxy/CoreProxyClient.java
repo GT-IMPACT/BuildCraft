@@ -82,14 +82,6 @@ public class CoreProxyClient extends CoreProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TilePathMarker.class, new RenderPathMarker());
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEngineBase.class, new RenderEngine());
-		for (int i = 0; i < 16; i++) {
-			if (BuildCraftCore.engineBlock.hasEngine(i)) {
-				TileEngineBase engineTile = (TileEngineBase) BuildCraftCore.engineBlock.createTileEntity(null, i);
-				engineTile.blockType = BuildCraftCore.engineBlock;
-				engineTile.blockMetadata = i;
-				RenderingEntityBlocks.blockByEntityRenders.put(new RenderingEntityBlocks.EntityRenderIndex(BuildCraftCore.engineBlock, i), new RenderEngine(engineTile));
-			}
-		}
 	}
 
 	@Override

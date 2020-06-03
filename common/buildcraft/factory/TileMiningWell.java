@@ -119,9 +119,6 @@ public class TileMiningWell extends TileBuildCraft implements IHasWork, IPipeCon
 		if (miner != null) {
 			miner.invalidate();
 		}
-		if (worldObj != null && yCoord > 2) {
-			BuildCraftFactory.miningWellBlock.removePipes(worldObj, xCoord, yCoord, zCoord);
-		}
 	}
 
 	@Override

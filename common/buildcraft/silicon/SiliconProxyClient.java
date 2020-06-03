@@ -28,6 +28,5 @@ public class SiliconProxyClient extends SiliconProxy {
 		RenderingRegistry.registerBlockHandler(new RenderLaserTable());
 
 		ClientRegistry.bindTileEntitySpecialRenderer(TileLaser.class, new RenderLaserTile());
-		RenderingRegistry.registerEntityRenderingHandler(EntityPackage.class, new RenderSnowball(BuildCraftSilicon.packageItem));
 	}
 }

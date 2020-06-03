@@ -9,16 +9,34 @@
 package buildcraft.core.lib.items;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+
+import java.util.List;
+
+import static buildcraft.BuildCraftBuilders.fillerBlock;
 
 public class ItemBlockBuildCraft extends ItemBlock {
 
+	Block mBlock;
+
 	public ItemBlockBuildCraft(Block b) {
 		super(b);
+		mBlock = b;
 	}
 
 	@Override
 	public int getMetadata(int i) {
 		return i;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void addInformation(ItemStack par1, EntityPlayer player, List aList, boolean b) {
+		super.addInformation(par1, player, aList, b);
+		if (mBlock==fillerBlock) {
+			aList.add("Max range 128 Blocks");
+		}
 	}
 }

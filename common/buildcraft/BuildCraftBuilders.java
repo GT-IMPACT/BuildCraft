@@ -153,7 +153,6 @@ public class BuildCraftBuilders extends BuildCraftMod {
 	public static BlockBuilder builderBlock;
 	public static BlockArchitect architectBlock;
 	public static BlockBlueprintLibrary libraryBlock;
-	public static BlockQuarry quarryBlock;
 	public static BlockFrame frameBlock;
 	public static ItemBlueprintTemplate templateItem;
 	public static ItemBlueprintStandard blueprintItem;
@@ -185,10 +184,6 @@ public class BuildCraftBuilders extends BuildCraftMod {
 				int quarryZ = ticket.getModData().getInteger("quarryZ");
 
 				Block block = world.getBlock(quarryX, quarryY, quarryZ);
-				if (block == quarryBlock) {
-					TileQuarry tq = (TileQuarry) world.getTileEntity(quarryX, quarryY, quarryZ);
-					tq.forceChunkLoading(ticket);
-				}
 			}
 		}
 
@@ -201,9 +196,7 @@ public class BuildCraftBuilders extends BuildCraftMod {
 				int quarryZ = ticket.getModData().getInteger("quarryZ");
 
 				Block block = world.getBlock(quarryX, quarryY, quarryZ);
-				if (block == quarryBlock) {
-					validTickets.add(ticket);
-				}
+
 			}
 			return validTickets;
 		}
@@ -219,7 +212,7 @@ public class BuildCraftBuilders extends BuildCraftMod {
 				"\"$MINECRAFT" + File.separator + "blueprints\"",
 				"Location for the client blueprint database (used by the Electronic Library).", ConfigManager.RestartRequirement.NONE);
 
-		BuildCraftCore.mainConfigManager.register("general.markerRange", 64, "Set the maximum marker range.", ConfigManager.RestartRequirement.NONE);
+		BuildCraftCore.mainConfigManager.register("general.markerRange", 128, "Set the maximum marker range.", ConfigManager.RestartRequirement.NONE);
 		BuildCraftCore.mainConfigManager.register("general.quarry.oneTimeUse", false, "Should the quarry only be usable once after placing?", ConfigManager.RestartRequirement.NONE);
 		BuildCraftCore.mainConfigManager.register("general.quarry.doChunkLoading", true, "Should the quarry keep the chunks it is working on loaded?", ConfigManager.RestartRequirement.NONE);
 
@@ -480,7 +473,6 @@ public class BuildCraftBuilders extends BuildCraftMod {
 		schemes.registerSchematicBlock(builderBlock, SchematicBuilderLike.class);
 		schemes.registerSchematicBlock(fillerBlock, SchematicBuilderLike.class);
 		schemes.registerSchematicBlock(libraryBlock, SchematicRotateMeta.class, new int[]{2, 5, 3, 4}, true);
-		schemes.registerSchematicBlock(quarryBlock, SchematicBuilderLike.class);
 
 		if (constructionMarkerBlock != null) {
 			schemes.registerSchematicBlock(constructionMarkerBlock, SchematicIgnore.class);
@@ -500,16 +492,10 @@ public class BuildCraftBuilders extends BuildCraftMod {
 
 		BlueprintDeployer.instance = new RealBlueprintDeployer();
 
-		architectAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.architect", "architectAchievement", 11, 2, BuildCraftBuilders.architectBlock, BuildCraftCore.goldGearAchievement));
 		builderAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.builder", "builderAchievement", 13, 2, BuildCraftBuilders.builderBlock, architectAchievement));
 		blueprintAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.blueprint", "blueprintAchievement", 11, 4, BuildCraftBuilders.blueprintItem, architectAchievement));
 		templateAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.template", "templateAchievement", 13, 4, BuildCraftBuilders.templateItem, blueprintAchievement));
 		libraryAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.blueprintLibrary", "blueprintLibraryAchievement", 15, 2, BuildCraftBuilders.libraryBlock, builderAchievement));
-		chunkDestroyerAchievement = BuildCraftCore.achievementManager.registerAchievement(new Achievement("achievement.chunkDestroyer", "chunkDestroyerAchievement", 9, 2, quarryBlock, BuildCraftCore.diamondGearAchievement));
-
-		if (BuildCraftCore.loadDefaultRecipes) {
-			loadRecipes();
-		}
 
 		BuilderProxy.proxy.registerBlockRenderers();
 	}
@@ -524,8 +510,6 @@ public class BuildCraftBuilders extends BuildCraftMod {
 		blueprintItem.setUnlocalizedName("blueprintItem");
 		BCRegistry.INSTANCE.registerItem(blueprintItem, false);
 
-		quarryBlock = (BlockQuarry) CompatHooks.INSTANCE.getBlock(BlockQuarry.class);
-		BCRegistry.INSTANCE.registerBlock(quarryBlock.setBlockName("machineBlock"), false);
 
 		fillerBlock = (BlockFiller) CompatHooks.INSTANCE.getBlock(BlockFiller.class);
 		BCRegistry.INSTANCE.registerBlock(fillerBlock.setBlockName("fillerBlock"), false);
@@ -568,45 +552,6 @@ public class BuildCraftBuilders extends BuildCraftMod {
 		StatementManager.registerActionProvider(new BuildersActionProvider());
 	}
 
-	public static void loadRecipes() {
-		BCRegistry.INSTANCE.addCraftingRecipe(
-				new ItemStack(quarryBlock),
-				"ipi",
-				"gig",
-				"dDd",
-				'i', "gearIron",
-				'p', "dustRedstone",
-				'g', "gearGold",
-				'd', "gearDiamond",
-				'D', Items.diamond_pickaxe);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(templateItem, 1), "ppp", "pip", "ppp", 'i',
-				"dyeBlack", 'p', Items.paper);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(blueprintItem, 1), "ppp", "pip", "ppp", 'i',
-				"gemLapis", 'p', Items.paper);
-
-		if (constructionMarkerBlock != null) {
-			BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(constructionMarkerBlock, 1), "l ", "r ", 'l',
-					"gearGold", 'r', Blocks.redstone_torch);
-		}
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(fillerBlock, 1), "btb", "ycy", "gCg", 'b',
-				"dyeBlack", 't', BuildCraftCore.markerBlock, 'y', "dyeYellow",
-				'c', Blocks.crafting_table, 'g', "gearGold", 'C', Blocks.chest);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(builderBlock, 1), "btb", "ycy", "gCg", 'b',
-				"dyeBlack", 't', BuildCraftCore.markerBlock, 'y', "dyeYellow",
-				'c', Blocks.crafting_table, 'g', "gearDiamond", 'C', Blocks.chest);
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(architectBlock, 1), "btb", "ycy", "gCg", 'b',
-				"dyeBlack", 't', BuildCraftCore.markerBlock, 'y', "dyeYellow",
-				'c', Blocks.crafting_table, 'g', "gearDiamond", 'C',
-				new ItemStack(blueprintItem, 1));
-
-		BCRegistry.INSTANCE.addCraftingRecipe(new ItemStack(libraryBlock, 1), "igi", "bBb", "iri", 'B',
-				new ItemStack(blueprintItem), 'b', Blocks.bookshelf, 'i', "ingotIron", 'g', "gearIron", 'r', Items.redstone);
-	}
 
 	@Mod.EventHandler
 	public void processIMCRequests(FMLInterModComms.IMCEvent event) {

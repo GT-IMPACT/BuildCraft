@@ -19,25 +19,17 @@ import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.client.MinecraftForgeClient;
 
-import buildcraft.BuildCraftTransport;
-import buildcraft.transport.render.FacadeItemRenderer;
-import buildcraft.transport.render.GateItemRenderer;
 import buildcraft.transport.render.PipeItemRenderer;
 import buildcraft.transport.render.PipeRendererTESR;
 import buildcraft.transport.render.PipeRendererWorld;
-import buildcraft.transport.render.PipeTransportFluidsRenderer;
 import buildcraft.transport.render.PipeTransportItemsRenderer;
-import buildcraft.transport.render.PipeTransportPowerRenderer;
 import buildcraft.transport.render.PipeTransportRenderer;
-import buildcraft.transport.render.PlugItemRenderer;
 import buildcraft.transport.render.TileEntityPickupFX;
 
 public class TransportProxyClient extends TransportProxy {
 	public static final PipeItemRenderer pipeItemRenderer = new PipeItemRenderer();
 	public static final PipeRendererWorld pipeWorldRenderer = new PipeRendererWorld();
-	public static final FacadeItemRenderer facadeItemRenderer = new FacadeItemRenderer();
-	public static final PlugItemRenderer plugItemRenderer = new PlugItemRenderer();
-	public static final GateItemRenderer gateItemRenderer = new GateItemRenderer();
+
 
 	@Override
 	public void registerTileEntities() {
@@ -61,13 +53,8 @@ public class TransportProxyClient extends TransportProxy {
 			MinecraftForgeClient.registerItemRenderer(itemPipe, pipeItemRenderer);
 		}
 
-		MinecraftForgeClient.registerItemRenderer(BuildCraftTransport.facadeItem, facadeItemRenderer);
-		MinecraftForgeClient.registerItemRenderer(BuildCraftTransport.plugItem, plugItemRenderer);
-		MinecraftForgeClient.registerItemRenderer(BuildCraftTransport.pipeGate, gateItemRenderer);
 
 		PipeTransportRenderer.RENDERER_MAP.put(PipeTransportItems.class, new PipeTransportItemsRenderer());
-		PipeTransportRenderer.RENDERER_MAP.put(PipeTransportFluids.class, new PipeTransportFluidsRenderer());
-		PipeTransportRenderer.RENDERER_MAP.put(PipeTransportPower.class, new PipeTransportPowerRenderer());
 
 		TransportProxy.pipeModel = RenderingRegistry.getNextAvailableRenderId();
 

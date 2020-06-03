@@ -20,7 +20,6 @@ public class SchematicPump extends SchematicTile {
 
 	@Override
 	public void getRequirementsForPlacement(IBuilderContext context, LinkedList<ItemStack> requirements) {
-		requirements.add(new ItemStack(BuildCraftFactory.pumpBlock));
 	}
 
 	@Override

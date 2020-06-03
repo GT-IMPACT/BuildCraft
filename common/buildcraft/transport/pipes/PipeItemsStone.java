@@ -8,6 +8,8 @@
  */
 package buildcraft.transport.pipes;
 
+import buildcraft.core.lib.utils.MathUtils;
+import buildcraft.transport.*;
 import net.minecraft.item.Item;
 
 import cpw.mods.fml.relauncher.Side;
@@ -16,9 +18,6 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import buildcraft.BuildCraftTransport;
 import buildcraft.api.core.IIconProvider;
-import buildcraft.transport.Pipe;
-import buildcraft.transport.PipeIconProvider;
-import buildcraft.transport.PipeTransportItems;
 import buildcraft.transport.pipes.events.PipeEventItem;
 
 public class PipeItemsStone extends Pipe<PipeTransportItems> {
@@ -39,6 +38,8 @@ public class PipeItemsStone extends Pipe<PipeTransportItems> {
 	}
 
 	public void eventHandler(PipeEventItem.AdjustSpeed event) {
-		event.slowdownAmount /= 2;
+		event.handled = true;
+		TravelingItem item = event.item;
+		item.setSpeed(MathUtils.clamp(item.getSpeed() * TransportConstants.PIPE_SPEEDUP_MULTIPLIER, TransportConstants.PIPE_MIN_SPEED * TransportConstants.PIPE_SPEEDUP_MULTIPLIER, TransportConstants.PIPE_MAX_SPEED));
 	}
 }

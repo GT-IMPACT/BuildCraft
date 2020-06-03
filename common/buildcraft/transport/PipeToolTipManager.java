@@ -33,12 +33,6 @@ public final class PipeToolTipManager {
 				PipeToolTipManager.addToolTip(pipe.getKey(), String.format("%d RF/t", pipe.getValue()));
 			}
 		}
-
-		if (!BuildCraftCore.hideFluidNumbers) {
-			for (Map.Entry<Class<? extends Pipe<?>>, Integer> pipe : PipeTransportFluids.fluidCapacities.entrySet()) {
-				PipeToolTipManager.addToolTip(pipe.getKey(), String.format("%d mB/t", pipe.getValue()));
-			}
-		}
 	}
 
 	/**
