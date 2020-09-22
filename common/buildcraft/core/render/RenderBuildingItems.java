@@ -55,7 +55,7 @@ public class RenderBuildingItems {
 
 		if (provider.getBuilders() != null) {
 			for (BuildingItem i : provider.getBuilders()) {
-				doRenderItem(i, 1.0F);
+				//doRenderItem(i, 1.0F);
 			}
 		}
 
