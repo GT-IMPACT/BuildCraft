@@ -29,7 +29,22 @@ public class FactoryProxyClient extends FactoryProxy {
 	public void initializeTileEntities() {
 		super.initializeTileEntities();
 
+		if (BuildCraftFactory.tankBlock != null) {
+			ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new RenderTank());
+		}
 
+		if (BuildCraftFactory.refineryBlock != null) {
+			ClientRegistry.bindTileEntitySpecialRenderer(TileRefinery.class, new RenderRefinery());
+			RenderingEntityBlocks.blockByEntityRenders.put(new EntityRenderIndex(BuildCraftFactory.refineryBlock, 0), new RenderRefinery());
+		}
+
+		if (BuildCraftFactory.hopperBlock != null) {
+			ClientRegistry.bindTileEntitySpecialRenderer(TileHopper.class, new RenderHopper());
+			RenderingEntityBlocks.blockByEntityRenders.put(new EntityRenderIndex(BuildCraftFactory.hopperBlock, 0), new RenderHopper());
+		}
+
+		ClientRegistry.bindTileEntitySpecialRenderer(TileMiningWell.class, new RenderLEDTile(BuildCraftFactory.miningWellBlock));
+		ClientRegistry.bindTileEntitySpecialRenderer(TilePump.class, new RenderLEDTile(BuildCraftFactory.pumpBlock));
 	}
 
 	@Override

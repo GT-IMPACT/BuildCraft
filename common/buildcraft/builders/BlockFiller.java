@@ -66,6 +66,4 @@ public class BlockFiller extends BlockBuildCraft {
 	public int getLightValue(IBlockAccess world, int x, int y, int z) {
 		return 1;
 	}
-
-
 }

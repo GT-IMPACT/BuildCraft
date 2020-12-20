@@ -59,6 +59,7 @@ import buildcraft.core.lib.network.ISyncedTile;
 import buildcraft.core.lib.network.Packet;
 import buildcraft.core.lib.network.PacketTileState;
 import buildcraft.core.lib.utils.Utils;
+import buildcraft.transport.ItemFacade.FacadeState;
 import buildcraft.transport.gates.GateFactory;
 import buildcraft.transport.gates.GatePluggable;
 import buildcraft.transport.pluggable.PlugPluggable;
@@ -138,6 +139,7 @@ public class TileGenericPipe extends TileEntity implements IFluidHandler,
 						if ("buildcraft.transport.gates.ItemGate$GatePluggable".equals(c)) {
 							pluggableClass = GatePluggable.class;
 						} else if ("buildcraft.transport.ItemFacade$FacadePluggable".equals(c)) {
+							pluggableClass = FacadePluggable.class;
 						} else if ("buildcraft.transport.ItemPlug$PlugPluggable".equals(c)) {
 							pluggableClass = PlugPluggable.class;
 						} else if ("buildcraft.transport.gates.ItemRobotStation$RobotStationPluggable".equals(c)
@@ -166,6 +168,7 @@ public class TileGenericPipe extends TileEntity implements IFluidHandler,
 			for (int i = 0; i < ForgeDirection.VALID_DIRECTIONS.length; i++) {
 				PipePluggable pluggable = null;
 				if (nbt.hasKey("facadeState[" + i + "]")) {
+					pluggable = new FacadePluggable(FacadeState.readArray(nbt.getTagList("facadeState[" + i + "]", Constants.NBT.TAG_COMPOUND)));
 				} else {
 					// Migration support for 5.0.x and 6.0.x
 					if (nbt.hasKey("facadeBlocks[" + i + "]")) {
@@ -175,11 +178,23 @@ public class TileGenericPipe extends TileEntity implements IFluidHandler,
 
 						if (blockId != 0) {
 							int metadata = nbt.getInteger("facadeMeta[" + i + "]");
+							pluggable = new FacadePluggable(new FacadeState[]{FacadeState.create(block, metadata)});
 						}
 					} else if (nbt.hasKey("facadeBlocksStr[" + i + "][0]")) {
 						// 6.0.x
+						FacadeState mainState = FacadeState.create(
+								(Block) Block.blockRegistry.getObject(nbt.getString("facadeBlocksStr[" + i + "][0]")),
+								nbt.getInteger("facadeMeta[" + i + "][0]")
+						);
 						if (nbt.hasKey("facadeBlocksStr[" + i + "][1]")) {
+							FacadeState phasedState = FacadeState.create(
+									(Block) Block.blockRegistry.getObject(nbt.getString("facadeBlocksStr[" + i + "][1]")),
+									nbt.getInteger("facadeMeta[" + i + "][1]"),
+									PipeWire.fromOrdinal(nbt.getInteger("facadeWires[" + i + "]"))
+							);
+							pluggable = new FacadePluggable(new FacadeState[]{mainState, phasedState});
 						} else {
+							pluggable = new FacadePluggable(new FacadeState[]{mainState});
 						}
 					}
 				}
@@ -927,7 +942,7 @@ public class TileGenericPipe extends TileEntity implements IFluidHandler,
 	}
 
 	public boolean hasEnabledFacade(ForgeDirection direction) {
-		return hasFacade(direction);
+		return hasFacade(direction) && !((FacadePluggable) getPipePluggable(direction)).isTransparent();
 	}
 
 	// Legacy

@@ -94,7 +94,7 @@ public class TilePathMarker extends TileMarker implements IPathProvider {
 			int dz = this.zCoord - t.zCoord;
 			distance = dx * dx + dy * dy + dz * dz;
 
-			if (distance > 128 * 128) {
+			if (distance > DefaultProps.MARKER_RANGE * DefaultProps.MARKER_RANGE) {
 				continue;
 			}
 

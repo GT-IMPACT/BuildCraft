@@ -17,6 +17,7 @@ public class EntityPackage extends EntityThrowable {
 
 	public EntityPackage(World world) {
 		super(world);
+		this.pkg = new ItemStack(BuildCraftSilicon.packageItem);
 	}
 
 	public EntityPackage(World world, EntityPlayer player, ItemStack stack) {

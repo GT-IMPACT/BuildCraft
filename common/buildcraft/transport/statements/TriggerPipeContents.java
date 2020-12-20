@@ -26,7 +26,9 @@ import buildcraft.core.lib.inventory.StackHelper;
 import buildcraft.core.lib.utils.StringUtils;
 import buildcraft.core.statements.BCStatement;
 import buildcraft.transport.Pipe;
+import buildcraft.transport.PipeTransportFluids;
 import buildcraft.transport.PipeTransportItems;
+import buildcraft.transport.PipeTransportPower;
 import buildcraft.transport.TravelingItem;
 
 public class TriggerPipeContents extends BCStatement implements ITriggerInternal {
@@ -88,6 +90,48 @@ public class TriggerPipeContents extends BCStatement implements ITriggerInternal
 				} else {
 					return !transportItems.items.isEmpty();
 				}
+			}
+		} else if (pipe.transport instanceof PipeTransportFluids) {
+			PipeTransportFluids transportFluids = (PipeTransportFluids) pipe.transport;
+
+			if (kind == PipeContents.empty) {
+				return transportFluids.fluidType == null;
+			} else {
+				if (parameter != null && parameter.getItemStack() != null) {
+					FluidStack searchedFluid = FluidContainerRegistry.getFluidForFilledItem(parameter.getItemStack());
+
+					if (searchedFluid != null) {
+						return transportFluids.fluidType != null && searchedFluid.isFluidEqual(transportFluids.fluidType);
+					}
+				} else {
+					return transportFluids.fluidType != null;
+				}
+			}
+		} else if (pipe.transport instanceof PipeTransportPower) {
+			PipeTransportPower transportPower = (PipeTransportPower) pipe.transport;
+
+			switch (kind) {
+				case empty:
+					for (short s : transportPower.displayPower) {
+						if (s > 0) {
+							return false;
+						}
+					}
+
+					return true;
+				case containsEnergy:
+					for (short s : transportPower.displayPower) {
+						if (s > 0) {
+							return true;
+						}
+					}
+
+					return false;
+				case requestsEnergy:
+					return transportPower.isQueryingPower();
+				default:
+				case tooMuchEnergy:
+					return transportPower.isOverloaded();
 			}
 		}
 

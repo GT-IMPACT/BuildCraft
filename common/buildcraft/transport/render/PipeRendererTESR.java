@@ -46,6 +46,7 @@ public class PipeRendererTESR extends TileEntitySpecialRenderer {
 
 	public void onTextureReload() {
 		PipeTransportPowerRenderer.clear();
+		PipeTransportFluidsRenderer.clear();
 	}
 
 	@Override

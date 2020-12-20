@@ -34,6 +34,7 @@ import buildcraft.api.items.IMapLocation;
 import buildcraft.core.lib.items.ItemBuildCraft;
 import buildcraft.core.lib.utils.NBTUtils;
 import buildcraft.core.lib.utils.StringUtils;
+import buildcraft.robotics.ZonePlan;
 
 public class ItemMapLocation extends ItemBuildCraft implements IMapLocation {
 	public ItemMapLocation() {
@@ -221,7 +222,12 @@ public class ItemMapLocation extends ItemBuildCraft implements IMapLocation {
 	public IZone getZone(ItemStack item) {
 		NBTTagCompound cpt = NBTUtils.getItemData(item);
 
-		if (cpt.hasKey("kind") && cpt.getByte("kind") == 1) {
+		if (cpt.hasKey("kind") && cpt.getByte("kind") == 3) {
+			ZonePlan plan = new ZonePlan();
+			plan.readFromNBT(cpt);
+
+			return plan;
+		} else if (cpt.hasKey("kind") && cpt.getByte("kind") == 1) {
 			return getBox(item);
 		} else if (cpt.hasKey("kind") && cpt.getByte("kind") == 0) {
 			return getPointBox(item);
@@ -248,6 +254,13 @@ public class ItemMapLocation extends ItemBuildCraft implements IMapLocation {
 		} else {
 			return null;
 		}
+	}
+
+	public static void setZone(ItemStack item, ZonePlan plan) {
+		NBTTagCompound cpt = NBTUtils.getItemData(item);
+
+		cpt.setByte("kind", (byte) 3);
+		plan.writeToNBT(cpt);
 	}
 
 	@Override
