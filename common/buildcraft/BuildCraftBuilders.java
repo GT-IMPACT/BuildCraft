@@ -219,7 +219,7 @@ public class BuildCraftBuilders extends BuildCraftMod {
 				"\"$MINECRAFT" + File.separator + "blueprints\"",
 				"Location for the client blueprint database (used by the Electronic Library).", ConfigManager.RestartRequirement.NONE);
 
-		BuildCraftCore.mainConfigManager.register("general.markerRange", 64, "Set the maximum marker range.", ConfigManager.RestartRequirement.NONE);
+		BuildCraftCore.mainConfigManager.register("general.markerRange", 128, "Set the maximum marker range.", ConfigManager.RestartRequirement.NONE);
 		BuildCraftCore.mainConfigManager.register("general.quarry.oneTimeUse", false, "Should the quarry only be usable once after placing?", ConfigManager.RestartRequirement.NONE);
 		BuildCraftCore.mainConfigManager.register("general.quarry.doChunkLoading", true, "Should the quarry keep the chunks it is working on loaded?", ConfigManager.RestartRequirement.NONE);
 
