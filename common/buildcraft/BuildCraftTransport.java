@@ -248,6 +248,8 @@ public class BuildCraftTransport extends BuildCraftMod {
 			genericPipeBlock = (BlockGenericPipe) CompatHooks.INSTANCE.getBlock(BlockGenericPipe.class);
 			BCRegistry.INSTANCE.registerBlock(genericPipeBlock.setBlockName("pipeBlock"), ItemBlock.class, true);
 
+			pipeItemsStone = buildPipe(PipeItemsStone.class, "plateSteel", "blockGlassColorless", "plateSteel");
+
 			for (PipeContents kind : PipeContents.values()) {
 				triggerPipe[kind.ordinal()] = new TriggerPipeContents(kind);
 			}
@@ -371,6 +373,23 @@ public class BuildCraftTransport extends BuildCraftMod {
 	}
 
 	public void reloadConfig(ConfigManager.RestartRequirement restartType) {
+		if (restartType == ConfigManager.RestartRequirement.GAME) {
+			gateCostMultiplier = (float) BuildCraftCore.mainConfigManager.get("power.gateCostMultiplier").getDouble();
+			additionalWaterproofingRecipe = BuildCraftCore.mainConfigManager.get("general.pipes.slimeballWaterproofRecipe").getBoolean();
+			pipeFluidsBaseFlowRate = BuildCraftCore.mainConfigManager.get("general.pipes.baseFluidRate").getInt();
+
+			reloadConfig(ConfigManager.RestartRequirement.WORLD);
+		} else if (restartType == ConfigManager.RestartRequirement.WORLD) {
+			usePipeLoss = BuildCraftCore.mainConfigManager.get("experimental.kinesisPowerLossOnTravel").getBoolean();
+
+			reloadConfig(ConfigManager.RestartRequirement.NONE);
+		} else {
+			pipeDurability = (float) BuildCraftCore.mainConfigManager.get("general.pipes.hardness").getDouble();
+
+			if (BuildCraftCore.mainConfiguration.hasChanged()) {
+				BuildCraftCore.mainConfiguration.save();
+			}
+		}
 	}
 
 	@SubscribeEvent

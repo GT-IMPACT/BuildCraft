@@ -8,7 +8,6 @@
  */
 package buildcraft;
 
-import buildcraft.factory.*;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.Item;
@@ -40,6 +39,18 @@ import buildcraft.core.builders.schematics.SchematicFree;
 import buildcraft.core.config.ConfigManager;
 import buildcraft.core.lib.network.ChannelHandler;
 import buildcraft.core.lib.network.PacketHandler;
+import buildcraft.factory.BlockPlainPipe;
+import buildcraft.factory.BlockTank;
+import buildcraft.factory.FactoryGuiHandler;
+import buildcraft.factory.FactoryProxy;
+import buildcraft.factory.FactoryProxyClient;
+import buildcraft.factory.PumpDimensionList;
+import buildcraft.factory.TileAutoWorkbench;
+import buildcraft.factory.TileFloodGate;
+import buildcraft.factory.TileHopper;
+import buildcraft.factory.TileMiningWell;
+import buildcraft.factory.TileRefinery;
+import buildcraft.factory.TileTank;
 import buildcraft.factory.schematics.SchematicTileIgnoreState;
 
 @Mod(name = "BuildCraft Factory", version = Version.VERSION, useMetadata = false, modid = "BuildCraft|Factory", dependencies = DefaultProps.DEPENDENCY_CORE)
@@ -47,7 +58,7 @@ public class BuildCraftFactory extends BuildCraftMod {
 
 	@Mod.Instance("BuildCraft|Factory")
 	public static BuildCraftFactory instance;
-	public static BlockFloodGate floodGateBlock;
+
 	public static BlockPlainPipe plainPipeBlock;
 
 	public static Achievement aLotOfCraftingAchievement;
@@ -59,11 +70,11 @@ public class BuildCraftFactory extends BuildCraftMod {
 	@Mod.EventHandler
 	public void load(FMLInitializationEvent evt) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new FactoryGuiHandler());
-		BCRegistry.INSTANCE.registerTileEntity(TileFloodGate.class, "net.minecraft.src.buildcraft.factory.TileFloodGate");
+
 		FactoryProxy.proxy.initializeTileEntities();
 
 		BuilderAPI.schematicRegistry.registerSchematicBlock(plainPipeBlock, SchematicFree.class);
-		BuilderAPI.schematicRegistry.registerSchematicBlock(floodGateBlock, SchematicTileIgnoreState.class);
+
 
 	}
 
@@ -82,9 +93,6 @@ public class BuildCraftFactory extends BuildCraftMod {
 		BuildCraftCore.mainConfigManager.get("general.miningDepth").setMinValue(2).setMaxValue(256);
 		BuildCraftCore.mainConfigManager.register("general.pumpDimensionControl", DefaultProps.PUMP_DIMENSION_LIST, plc, ConfigManager.RestartRequirement.NONE);
 		BuildCraftCore.mainConfigManager.register("general.pumpsNeedRealPower", false, "Do pumps need real (non-redstone) power?", ConfigManager.RestartRequirement.WORLD);
-
-		floodGateBlock = (BlockFloodGate) CompatHooks.INSTANCE.getBlock(BlockFloodGate.class);
-		BCRegistry.INSTANCE.registerBlock(floodGateBlock.setBlockName("floodGateBlock"), false);
 
 		reloadConfig(ConfigManager.RestartRequirement.GAME);
 
@@ -133,11 +141,20 @@ public class BuildCraftFactory extends BuildCraftMod {
 
 	@Mod.EventHandler
 	public void whiteListAppliedEnergetics(FMLInitializationEvent event) {
-		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", TileFloodGate.class.getCanonicalName());
-		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", TileTank.class.getCanonicalName());
-		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", TileRefinery.class.getCanonicalName());
-		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial", TileHopper.class.getCanonicalName());
-
+		//FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+		//		TileMiningWell.class.getCanonicalName());
+		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+				TileAutoWorkbench.class.getCanonicalName());
+		//FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+		//		TilePump.class.getCanonicalName());
+		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+				TileFloodGate.class.getCanonicalName());
+		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+				TileTank.class.getCanonicalName());
+		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+				TileRefinery.class.getCanonicalName());
+		FMLInterModComms.sendMessage("appliedenergistics2", "whitelist-spatial",
+				TileHopper.class.getCanonicalName());
 	}
 
 	@Mod.EventHandler
