@@ -10,8 +10,6 @@ package buildcraft;
 
 import java.util.LinkedList;
 
-import buildcraft.transport.pipes.PipeItemsCobblestone;
-import buildcraft.transport.pipes.PipeItemsGold;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -249,6 +247,7 @@ public class BuildCraftTransport extends BuildCraftMod {
 			BCRegistry.INSTANCE.registerBlock(genericPipeBlock.setBlockName("pipeBlock"), ItemBlock.class, true);
 
 			pipeItemsStone = buildPipe(PipeItemsStone.class, "plateSteel", "blockGlassColorless", "plateSteel");
+
 
 			for (PipeContents kind : PipeContents.values()) {
 				triggerPipe[kind.ordinal()] = new TriggerPipeContents(kind);
