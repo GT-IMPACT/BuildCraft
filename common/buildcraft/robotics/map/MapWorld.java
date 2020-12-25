@@ -127,8 +127,7 @@ public class MapWorld {
 					} else {
 						try {
 							updateChunk(c);
-						} catch (Exception e) {
-							e.printStackTrace();
+						} catch (Exception ignored) {
 						}
 					}
 				}
